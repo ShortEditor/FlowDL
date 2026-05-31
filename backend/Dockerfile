@@ -9,9 +9,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # ---- Runtime stage ----
 FROM python:3.11-slim
 
-# Install ffmpeg (required for merging video+audio streams, especially 4K MKV)
+# Install ffmpeg and nodejs (required for merging streams and signature decryption)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg && \
+    apt-get install -y --no-install-recommends ffmpeg nodejs && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
