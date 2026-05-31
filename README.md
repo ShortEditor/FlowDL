@@ -83,6 +83,7 @@ The frontend app will be live at [http://localhost:3000](http://localhost:3000).
 
 ### Backend Configuration (`backend/.env`)
 - `ALLOWED_ORIGIN`: The URL of your deployed frontend (e.g. `https://flowdl.vercel.app`) to restrict CORS access (defaults to `*` if unspecified).
+- `YT_COOKIES`: The text content of a Netscape-format YouTube cookies file. Used to authenticate downloads and bypass anti-bot blocks ("Sign in to confirm you're not a bot") on datacenter IPs like Render.
 
 ### Frontend Configuration (`frontend/.env.local`)
 - `NEXT_PUBLIC_API_URL`: The URL of your backend API service (defaults to `http://localhost:8000` for local dev).

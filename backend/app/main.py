@@ -11,12 +11,25 @@ from .downloader import (
     get_media_type,
     get_video_info,
     sanitize_filename,
+    COOKIES_PATH,
 )
 from .models import DownloadRequest, VideoInfo
 
 # ---------------------------------------------------------------------------
-# App setup
+# App setup & YouTube Cookies writing
 # ---------------------------------------------------------------------------
+
+# Write YouTube cookies dynamically from environment variable to bypass anti-bot blocks
+yt_cookies = os.getenv("YT_COOKIES")
+if yt_cookies:
+    try:
+        # Ensure parent directories exist (should exist since it is inside the package)
+        os.makedirs(os.path.dirname(COOKIES_PATH), exist_ok=True)
+        with open(COOKIES_PATH, "w", encoding="utf-8") as f:
+            f.write(yt_cookies.strip() + "\n")
+        print("Successfully initialized YouTube cookies from YT_COOKIES environment variable.")
+    except Exception as e:
+        print(f"Warning: Failed to write cookies.txt from environment variable: {e}")
 
 app = FastAPI(
     title="FlowDL API",

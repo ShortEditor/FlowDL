@@ -2,8 +2,8 @@ import asyncio
 import json
 import re
 import subprocess
+import os
 from typing import List
-
 
 QUALITY_FORMAT_MAP = {
     "360": "bestvideo[height<=360][ext=mp4]+bestaudio[ext=m4a]/best[height<=360][ext=mp4]/best[height<=360]/best",
@@ -13,6 +13,8 @@ QUALITY_FORMAT_MAP = {
     "best": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
     "2160": "bestvideo[height<=2160]+bestaudio/best",
 }
+
+COOKIES_PATH = os.path.join(os.path.dirname(__file__), "cookies.txt")
 
 
 async def get_video_info(url: str) -> dict:
@@ -28,8 +30,10 @@ async def get_video_info(url: str) -> dict:
         "--no-playlist",
         "--no-warnings",
         "--quiet",
-        url,
     ]
+    if os.path.exists(COOKIES_PATH):
+        cmd.extend(["--cookies", COOKIES_PATH])
+    cmd.append(url)
 
     try:
         process = await asyncio.create_subprocess_exec(
@@ -95,6 +99,8 @@ def build_yt_dlp_cmd(url: str, format: str, quality: str) -> List[str]:
     Uses -o - to write output to stdout (no disk writes).
     """
     base = ["yt-dlp", "--no-playlist", "--no-warnings"]
+    if os.path.exists(COOKIES_PATH):
+        base.extend(["--cookies", COOKIES_PATH])
 
     if format == "mp3":
         return base + [

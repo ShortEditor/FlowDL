@@ -37,24 +37,26 @@ export default function DownloadButton({
       className={`
         group relative w-full flex items-center justify-center gap-3
         py-4 px-6 rounded-2xl text-base font-bold text-white
-        transition-all duration-300 overflow-hidden
+        transition-all duration-300 overflow-hidden select-none
         ${isLoading
-          ? 'bg-gradient-to-r from-brand/70 to-violet-500/70 cursor-not-allowed'
-          : 'bg-gradient-to-r from-brand to-violet-500 cursor-pointer hover:shadow-[0_0_40px_rgba(99,102,241,0.6)] hover:scale-[1.01] active:scale-[0.99]'
+          ? 'bg-gradient-to-r from-brand/60 to-violet-500/60 cursor-not-allowed border border-white/5 opacity-80'
+          : 'bg-gradient-to-r from-brand to-violet-600 hover:from-brand-light hover:to-violet-500 cursor-pointer hover:shadow-[0_0_35px_rgba(99,102,241,0.5)] hover:scale-[1.01] active:scale-[0.99] border border-white/10'
         }
-        animate-pulse-glow
       `}
     >
       {/* Shimmer overlay on hover */}
       {!isLoading && (
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
       )}
+
+      {/* Background glowing halo */}
+      <div className="absolute inset-0 bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
       <span className="relative z-10 flex items-center gap-3">
         {isLoading ? (
           <>
             <svg
-              className="w-5 h-5 animate-spin-slow"
+              className="w-5 h-5 animate-spin-slow text-white"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -72,12 +74,12 @@ export default function DownloadButton({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
               />
             </svg>
-            <span>Preparing download...</span>
+            <span className="tracking-wide">Piping stream to browser...</span>
           </>
         ) : (
           <>
             <svg
-              className="w-5 h-5"
+              className="w-5 h-5 transition-transform duration-300 group-hover:translate-y-0.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -89,7 +91,7 @@ export default function DownloadButton({
                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
               />
             </svg>
-            <span>
+            <span className="tracking-wide font-extrabold">
               Download {formatLabels[format]}
               <span className="ml-2 text-sm font-normal text-white/70">
                 · {qualityLabels[quality]}
