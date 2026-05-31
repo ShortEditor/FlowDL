@@ -32,6 +32,7 @@ async def get_video_info(url: str) -> dict:
         "--no-playlist",
         "--no-warnings",
         "--quiet",
+        "--js-runtimes", "node",
     ]
     if os.path.exists(COOKIES_PATH):
         cmd.extend(["--cookies", COOKIES_PATH])
@@ -100,7 +101,7 @@ def build_yt_dlp_cmd(url: str, format: str, quality: str) -> List[str]:
     Build the yt-dlp command for piped streaming.
     Uses -o - to write output to stdout (no disk writes).
     """
-    base = ["yt-dlp", "--no-playlist", "--no-warnings"]
+    base = ["yt-dlp", "--no-playlist", "--no-warnings", "--js-runtimes", "node"]
     if os.path.exists(COOKIES_PATH):
         base.extend(["--cookies", COOKIES_PATH])
 
