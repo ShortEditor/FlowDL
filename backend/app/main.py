@@ -23,10 +23,44 @@ from .models import DownloadRequest, VideoInfo
 yt_cookies = os.getenv("YT_COOKIES")
 if yt_cookies:
     try:
-        # Ensure parent directories exist (should exist since it is inside the package)
+        # Ensure parent directories exist
         os.makedirs(os.path.dirname(COOKIES_PATH), exist_ok=True)
+        
+        # Determine if cookies are in JSON format
+        cookies_str = yt_cookies.strip()
+        if cookies_str.startswith("[") and cookies_str.endswith("]"):
+            import json
+            try:
+                cookies_list = json.loads(cookies_str)
+                if isinstance(cookies_list, list):
+                    lines = [
+                        "# Netscape HTTP Cookie File",
+                        "# http://curl.haxx.se/rfc/cookie_spec.html",
+                        "# This file is generated dynamically by FlowDL.",
+                    ]
+                    for cookie in cookies_list:
+                        domain = cookie.get("domain", "")
+                        host_only = cookie.get("hostOnly", False)
+                        include_subdomains = "FALSE" if host_only else "TRUE"
+                        path = cookie.get("path", "/")
+                        secure = "TRUE" if cookie.get("secure", False) else "FALSE"
+                        
+                        exp = cookie.get("expirationDate")
+                        expiration = str(int(float(exp))) if exp is not None else "0"
+                        
+                        name = cookie.get("name", "")
+                        value = cookie.get("value", "")
+                        
+                        if domain and name:
+                            lines.append(f"{domain}\t{include_subdomains}\t{path}\t{secure}\t{expiration}\t{name}\t{value}")
+                    
+                    cookies_str = "\n".join(lines) + "\n"
+                    print("Detected JSON cookies. Successfully converted to Netscape format.")
+            except Exception as json_err:
+                print(f"Failed to parse cookies as JSON, treating as raw Netscape: {json_err}")
+
         with open(COOKIES_PATH, "w", encoding="utf-8") as f:
-            f.write(yt_cookies.strip() + "\n")
+            f.write(cookies_str)
         print("Successfully initialized YouTube cookies from YT_COOKIES environment variable.")
     except Exception as e:
         print(f"Warning: Failed to write cookies.txt from environment variable: {e}")
