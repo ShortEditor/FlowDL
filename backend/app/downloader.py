@@ -14,7 +14,9 @@ QUALITY_FORMAT_MAP = {
     "2160": "bestvideo[height<=2160]+bestaudio/best",
 }
 
-COOKIES_PATH = os.path.join(os.path.dirname(__file__), "cookies.txt")
+import tempfile
+
+COOKIES_PATH = os.path.join(tempfile.gettempdir(), "flowdl_cookies.txt")
 
 
 async def get_video_info(url: str) -> dict:
